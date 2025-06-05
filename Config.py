@@ -8,8 +8,8 @@ education_data = [
             "Enfocado en automatización, robótica, diseño mecánico y sistemas embebidos.",
             "Participación en proyectos universitarios con aplicación real en industrias.",
             "Desarrollé sistemas con PLCs y simuladores industriales.",
-            "Miembro activo de grupos de investigación en ingeniería aplicada."
-        ]
+            "Miembro activo de grupos de investigación en ingeniería aplicada.",
+        ],
     ],
     [
         "SENA",
@@ -20,8 +20,8 @@ education_data = [
             "Formación técnica en montaje, cableado y control de procesos industriales.",
             "Trabajo en equipo en proyectos de integración con sensores y actuadores.",
             "Simulación y programación de PLCs con TIA Portal y la plataforma Festo FST.",
-            "Certificación en normas de seguridad industrial eléctrica."
-        ]
+            "Certificación en normas de seguridad industrial eléctrica.",
+        ],
     ],
     [
         "SENA",
@@ -32,9 +32,9 @@ education_data = [
             "Aprendí estructuras de datos, algoritmos y lógica de programación.",
             "Desarrollo de aplicaciones web básicas con HTML, CSS y JavaScript.",
             "Trabajo colaborativo usando herramientas como Git y GitHub.",
-            "Proyectos de automatización simples con Python y C++."
-        ]
-    ]
+            "Proyectos de automatización simples con Python y C++.",
+        ],
+    ],
 ]
 
 experience_data = [
@@ -47,8 +47,8 @@ experience_data = [
         [
             "Validación documental y física de carga aérea para LATAM, Air Canada, entre otros.",
             "Coordinación con rampa para ajustes de peso y balance en aeronaves.",
-            "Soporte operativo en procesos logísticos de exportación."
-        ]
+            "Soporte operativo en procesos logísticos de exportación.",
+        ],
     ],
     [
         "EMCOCABLES",
@@ -60,8 +60,8 @@ experience_data = [
             "Instalación de motores, PLCs, drivers y sistemas de control.",
             "Participación en el montaje de una toronadora industrial desde cero.",
             "Cableado eléctrico (potencia y control), armado de tableros.",
-            "Mantenimiento preventivo y correctivo de sistemas automatizados."
-        ]
+            "Mantenimiento preventivo y correctivo de sistemas automatizados.",
+        ],
     ],
 ]
 
@@ -72,11 +72,10 @@ personal_data = [
     "Aficionado al aprendizaje autodidacta y a la mejora continua en herramientas digitales.",
     "He viajado por más de 10 ciudades en Colombia, siempre buscando entender nuevas culturas.",
     "Fanático de los videojuegos de estrategia y simulación, especialmente aquellos relacionados con lógica y sistemas.",
-    "Motivado por desafíos técnicos y proyectos colaborativos de impacto real."
+    "Motivado por desafíos técnicos y proyectos colaborativos de impacto real.",
 ]
 
 languajes_data = [
     "Inglés - Intermedio / Avanzado - (B2 / C1)",
     "Español - Nativo (C2)",
 ]
-

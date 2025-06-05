@@ -10,6 +10,7 @@ import os
 output_path = "./CV_Generados"
 os.makedirs(output_path, exist_ok=True)
 
+
 def generate_CV_PDF(index):
 
     # ------------------ LOAD INFO DATA -------------------------------- #
@@ -32,21 +33,28 @@ def generate_CV_PDF(index):
 
     # Crear documento PDF
     file_ID = "EN" if index else "ES"
-    filename = os.path.join(output_path, f"CV_{str.upper(full_Name).replace(' ', '_')}_{file_ID}.pdf")
+    filename = os.path.join(
+        output_path, f"CV_{str.upper(full_Name).replace(' ', '_')}_{file_ID}.pdf"
+    )
 
     if os.path.exists(filename):
         os.remove(filename)
 
-    doc = SimpleDocTemplate(filename, pagesize=LETTER,
-                            rightMargin=72, leftMargin=72,
-                            topMargin=72, bottomMargin=18)
-    
+    doc = SimpleDocTemplate(
+        filename,
+        pagesize=LETTER,
+        rightMargin=72,
+        leftMargin=72,
+        topMargin=72,
+        bottomMargin=18,
+    )
+
     default_style = ParagraphStyle(
         name="Default",
         fontName="Times-Roman",
         fontSize=10,
     )
-    
+
     story = []
 
     def translate_Text(text, to="en"):
@@ -68,12 +76,12 @@ def generate_CV_PDF(index):
     def add_Info(address, phone, email):
 
         style = ParagraphStyle(
-            name = "CustomTitle",
-            fontName = "Times-Roman",
-            fontSize = 10,
-            alignment = TA_CENTER,
+            name="CustomTitle",
+            fontName="Times-Roman",
+            fontSize=10,
+            alignment=TA_CENTER,
         )
-        
+
         info = address + " - " + phone + " - " + email
 
         story.append(Paragraph(info, style))
@@ -83,37 +91,47 @@ def generate_CV_PDF(index):
         section_name = translate_Text(section_name) if index else section_name
 
         style = ParagraphStyle(
-            name = section_name,
-            fontName = "Times-Bold",
-            fontSize = 10,
-            alignment = TA_LEFT,
+            name=section_name,
+            fontName="Times-Bold",
+            fontSize=10,
+            alignment=TA_LEFT,
         )
         story.append(Paragraph(str.upper(section_name), style))
         add_Separator()
 
     def add_Separator():
         story.append(HRFlowable(width="100%", thickness=1, color="black"))
-        story.append(Spacer(1,12))
+        story.append(Spacer(1, 12))
 
     def add_Two_Columns(left_text, right_text, left_style=None, right_style=None):
 
-        default_left_style = ParagraphStyle(name='Default', fontName="Times-Roman", fontSize=10, alignment=TA_LEFT, )
-        default_right_style = ParagraphStyle(name='Default', fontName="Times-Roman", fontSize=10, alignment=TA_RIGHT)
+        default_left_style = ParagraphStyle(
+            name="Default",
+            fontName="Times-Roman",
+            fontSize=10,
+            alignment=TA_LEFT,
+        )
+        default_right_style = ParagraphStyle(
+            name="Default", fontName="Times-Roman", fontSize=10, alignment=TA_RIGHT
+        )
 
         left_paragraph = Paragraph(left_text, left_style or default_left_style)
         right_paragraph = Paragraph(right_text, right_style or default_right_style)
 
-        table = Table([[left_paragraph, right_paragraph]], colWidths=["*","*"])
-        table.setStyle(TableStyle([
-            ("ALIGN", (0, 0), (0, 0), "LEFT"),
-            ("VALIGN", (1, 0), (1, 0), "CENTER"),
-            ("LEFTPADDING", (0, 0), (-1, -1), 0),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-            ("TOPPADDING", (0, 0), (-1, -1), 2),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-        ]))
+        table = Table([[left_paragraph, right_paragraph]], colWidths=["*", "*"])
+        table.setStyle(
+            TableStyle(
+                [
+                    ("ALIGN", (0, 0), (0, 0), "LEFT"),
+                    ("VALIGN", (1, 0), (1, 0), "CENTER"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 2),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ]
+            )
+        )
         story.append(table)
-        
 
     def add_List(items):
         for item in items:
@@ -123,7 +141,7 @@ def generate_CV_PDF(index):
     # Personal Info
     add_Title(full_Name)
     add_Info(address, phone, email)
-    
+
     # Education Info
     add_Section("Educación")
 
@@ -136,8 +154,12 @@ def generate_CV_PDF(index):
 
         institute = str.upper(institute)
 
-        add_Two_Columns(institute, location, ParagraphStyle(name="Left", fontName="Times-Bold"))
-        add_Two_Columns(program, dates, ParagraphStyle(name="Left", fontName="Times-Italic"))
+        add_Two_Columns(
+            institute, location, ParagraphStyle(name="Left", fontName="Times-Bold")
+        )
+        add_Two_Columns(
+            program, dates, ParagraphStyle(name="Left", fontName="Times-Italic")
+        )
         add_List(knowledge)
 
         story.append(Spacer(1, 12))
@@ -147,15 +169,19 @@ def generate_CV_PDF(index):
 
     for r in experience_selected:
         company, location, industry, role, dates, tasks = r
-        
+
         location = translate_Text(location) if index else location
         industry = translate_Text(industry) if index else industry
         role = translate_Text(role) if index else role
 
         company = str.upper(company)
-        add_Two_Columns(company, location, ParagraphStyle(name="Left", fontName="Times-Bold"))
+        add_Two_Columns(
+            company, location, ParagraphStyle(name="Left", fontName="Times-Bold")
+        )
         add_Two_Columns(industry, " ")
-        add_Two_Columns(role, dates, ParagraphStyle(name="Left", fontName="Times-BoldItalic"))
+        add_Two_Columns(
+            role, dates, ParagraphStyle(name="Left", fontName="Times-BoldItalic")
+        )
         add_List(tasks)
         story.append(Spacer(1, 12))
 
@@ -167,7 +193,6 @@ def generate_CV_PDF(index):
     story.append(PageBreak())
     add_Section("Idiomas")
     add_List(languajes_selected)
-
 
     # Generar PDF
     doc.build(story)
