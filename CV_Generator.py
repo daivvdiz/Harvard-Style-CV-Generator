@@ -7,7 +7,7 @@ from deep_translator import GoogleTranslator
 import Config as ConfigData
 import os
 
-output_path = "./CV_Generados"
+output_path = "C:/Users/David/Downloads/CV_Collection"
 os.makedirs(output_path, exist_ok=True)
 
 
@@ -15,26 +15,39 @@ def generate_CV_PDF(index):
 
     # ------------------ LOAD INFO DATA -------------------------------- #
     full_Name = "David Steven Diaz Perez"
-    address = "Cra 8H #173-84, Bogotá, Colombia"
-    phone = "+57 310 270 5787"
-    email = "daivvdiz@gmail.com"
+    info_data = {
+        "Email": "daivvdiz@gmail.com",
+        "Phone": "+57 310 270 5787",
+        "LinkedIn": '<a href="https://www.linkedin.com/in/daivvdiz"><font color="black"><u>LinkedIn</u></font></a>',
+        "GitHub": '<a href="https://www.github.com/daivvdiz"><font color="black"><u>GitHub</u></font></a>',
+    }
+
+    # ------------------ LOAD PROFESSIONAL PROFILE DATA -------------------------------- #
+    profile_data = ConfigData.profile_data
 
     # ------------------ LOAD EDUCATION DATA -------------------------------- #
-    education_selected = ConfigData.education_data
+    skills_data = ConfigData.skills_data
+
+    # ------------------ LOAD EDUCATION DATA -------------------------------- #
+    edducation_data = ConfigData.education_data
 
     # ------------------ LOAD EXPERIENCE DATA -------------------------------- #
-    experience_selected = ConfigData.experience_data
+    experience_data = ConfigData.experience_data
 
     # ------------------ LOAD PERSONAL INFO DATA -------------------------------- #
-    personal_selected = ConfigData.personal_data
+    personal_data = ConfigData.personal_data
+
+    # ------------------ LOAD PROJECTS DATA -------------------------------- #
+    projects_data = ConfigData.projects_data
 
     # ------------------ LOAD LANGUAJES DATA -------------------------------- #
-    languajes_selected = ConfigData.languajes_data
+    languajes_data = ConfigData.languajes_data
 
     # Crear documento PDF
+    file_position = "DATA"
     file_ID = "EN" if index else "ES"
     filename = os.path.join(
-        output_path, f"CV_{str.upper(full_Name).replace(' ', '_')}_{file_ID}.pdf"
+        output_path, f"CV_{str.upper(full_Name).replace(' ', '_')}_{file_ID}_{file_position}.pdf"
     )
 
     if os.path.exists(filename):
@@ -58,9 +71,17 @@ def generate_CV_PDF(index):
     story = []
 
     def translate_Text(text, to="en"):
-        translate = GoogleTranslator(source="auto", target=to).translate(text)
-        translate = translate.replace("Aunt Portal", "TIA Portal")
-        return translate
+        inputs = ["Aunt Portal", "Pandas", "Matpletlib", "PLCS", "Food Plotlib", "Girub", "Portal Festo", "Tia Portal"]
+        outputs = ["TIA Portal", "pandas", "matplotlib", "PLCs", "matplotlib", "GitHub", "Portal, Festo", "TIA Portal"]
+        if len(inputs) == len(outputs):
+            l = len(inputs)
+            if index:
+                translate = GoogleTranslator(source="auto", target=to).translate(text)
+                for x in range(0, l, 1):
+                    translate = translate.replace(inputs[x], outputs[x])
+                return translate
+            else:
+                return text
 
     def add_Title(title_name):
         style = ParagraphStyle(
@@ -73,22 +94,32 @@ def generate_CV_PDF(index):
         story.append(Paragraph(title_name, style))
         story.append(Spacer(1, 12))
 
-    def add_Info(address, phone, email):
+    def add_Info(info_data=None):
+        if info_data is None:
+            info_data = {}
+        if story is None:
+            raise ValueError("Debes pasar una lista válida en 'story'.")
 
+        # Estilos
         style = ParagraphStyle(
-            name="CustomTitle",
+            name="BasicInfo",
             fontName="Times-Roman",
             fontSize=10,
             alignment=TA_CENTER,
         )
 
-        info = address + " - " + phone + " - " + email
+        # Armar línea como "Email: x | LinkedIn: x | GitHub: x"
+        items = []
+        for key, value in info_data.items():
+            items.append(f"{value}")
 
-        story.append(Paragraph(info, style))
-        story.append(Spacer(2, 12))
+        info_line = " | ".join(items)
+
+        story.append(Paragraph(info_line, style))
+        story.append(Spacer(1, 12))
 
     def add_Section(section_name):
-        section_name = translate_Text(section_name) if index else section_name
+        section_name = translate_Text(section_name)
 
         style = ParagraphStyle(
             name=section_name,
@@ -112,7 +143,10 @@ def generate_CV_PDF(index):
             alignment=TA_LEFT,
         )
         default_right_style = ParagraphStyle(
-            name="Default", fontName="Times-Roman", fontSize=10, alignment=TA_RIGHT
+            name="Default",
+            fontName="Times-Roman",
+            fontSize=10,
+            alignment=TA_RIGHT
         )
 
         left_paragraph = Paragraph(left_text, left_style or default_left_style)
@@ -133,24 +167,53 @@ def generate_CV_PDF(index):
         )
         story.append(table)
 
-    def add_List(items):
-        for item in items:
-            item = translate_Text(item) if index else item
-            story.append(Paragraph(f"• {item}", default_style))
+    def add_List(items, index=None):
+        subtitle_style = ParagraphStyle(
+            name="Subtitle",
+            fontName="Times-Bold",
+            fontSize=10,
+            alignment=TA_LEFT,
+        )
 
-    # Personal Info
+        for n, item in enumerate(items):
+            item = translate_Text(item)
+            if n == index:
+                item = str.upper(item)
+                story.append(Paragraph(f"{item}", subtitle_style))
+            else:
+                story.append(Paragraph(f"• {item}", default_style))
+
+        story.append(Spacer(1, 12))
+
+    # ---------------------------------- BUILD DOCUMENT ----------------------------------- #
+    
+    # NAME
     add_Title(full_Name)
-    add_Info(address, phone, email)
 
-    # Education Info
+    # CONTACT INFO
+    add_Info(info_data)
+
+    # PROFILE
+    add_Section("Perfil Profesional")
+    story.append(Paragraph(translate_Text(profile_data), default_style))
+    story.append(Spacer(1, 12))
+
+    # SKILLS
+    add_Section("Habilidades")
+    for r in skills_data:
+        add_List(r, 0)
+
+    story.append(PageBreak())
+
+    # EDUCATION
     add_Section("Educación")
 
-    for r in education_selected:
+    for r in edducation_data:
         institute, location, program, dates, knowledge = r
 
-        institute = translate_Text(institute) if index else institute
-        location = translate_Text(location) if index else location
-        program = translate_Text(program) if index else program
+        institute = translate_Text(institute)
+        location = translate_Text(location)
+        program = translate_Text(program)
 
         institute = str.upper(institute)
 
@@ -162,17 +225,15 @@ def generate_CV_PDF(index):
         )
         add_List(knowledge)
 
-        story.append(Spacer(1, 12))
-
-    # Experience Info
+    # EXPERIENCE
     add_Section("Experiencia")
 
-    for r in experience_selected:
+    for r in experience_data:
         company, location, industry, role, dates, tasks = r
 
-        location = translate_Text(location) if index else location
-        industry = translate_Text(industry) if index else industry
-        role = translate_Text(role) if index else role
+        location = translate_Text(location)
+        industry = translate_Text(industry)
+        role = translate_Text(role)
 
         company = str.upper(company)
         add_Two_Columns(
@@ -183,16 +244,37 @@ def generate_CV_PDF(index):
             role, dates, ParagraphStyle(name="Left", fontName="Times-BoldItalic")
         )
         add_List(tasks)
-        story.append(Spacer(1, 12))
 
-    # Personal Info
-    add_Section("Información Personal")
-    add_List(personal_selected)
-
-    # Languajes Info
     story.append(PageBreak())
+
+    # PROJECTS
+    add_Section("Proyectos personales o académicos")
+    for r in projects_data:
+        institute, program, name, profile, date, knowledge = r
+
+        institute = translate_Text(institute)
+        program = translate_Text(program)
+        name = translate_Text(name)
+        profile = translate_Text(profile)
+        date = translate_Text(date)
+
+        institute = str.upper(institute)
+
+        add_Two_Columns(
+            institute, program, ParagraphStyle(name="Left", fontName="Times-Bold")
+        )
+        add_Two_Columns(
+            name, date, ParagraphStyle(name="Left", fontName="Times-Italic")
+        )
+        add_List(knowledge)
+
+    # LANGUAJES
     add_Section("Idiomas")
-    add_List(languajes_selected)
+    add_List(languajes_data)
+
+    # PERSONAL
+    add_Section("Información Personal")
+    add_List(personal_data)
 
     # Generar PDF
     doc.build(story)
